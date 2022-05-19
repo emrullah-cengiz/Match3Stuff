@@ -50,7 +50,7 @@ SpriteAtlas:
   - {fileID: 21300000, guid: b441e0ed4a69984409c2ce31370a1da5, type: 3}
   - {fileID: 21300000, guid: dd979e1e2235942479900a254bb331d1, type: 3}
   m_PackedSpriteNamesToIndex:
-  - TopOfBoard
+  - top-of-board
   - drop_blue
   - drop_green
   - tile

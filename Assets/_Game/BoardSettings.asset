@@ -15,7 +15,7 @@ MonoBehaviour:
   HorizontalTileCount: 8
   VerticalTileCount: 8
   TileWidth: 1.15
-  SpawnerColumnIndexes: 0000000001000000020000000400000006000000030000000500000007000000
+  SpawnerColumnIndexes: 0000000001000000020000000400000006000000
   DropMargin: 0.05
   DropSwitchDuration: 0.4
   DropBlowUpDuration: 0.5
