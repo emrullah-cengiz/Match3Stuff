@@ -19,7 +19,9 @@ MonoBehaviour:
   DropMargin: 0.05
   DropSwitchDuration: 0.4
   DropBlowUpDuration: 0.5
+  DropFallDelay: 0.06
   DropFallDuration: 0.4
+  DropSwipeEase: 1
   DropFallEase: 11
   DropPrefabs:
   - {fileID: 6630665538372155248, guid: 45f32c04797047b4db650d52dc28e288, type: 3}

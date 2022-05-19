@@ -38,32 +38,26 @@ public class GameManager : Singleton<GameManager>
 
         #region Slide drops effect
 
-        drop.spriteRenderer.sortingOrder += 2;
         drop.Swipe(neighborToChange.transform.position,
+                   focused: true,
                    callbackAction: () =>
                    {
                        if (!matchFounded)
                            //Slide back the drop
                            drop.Swipe(neighborToChange.transform.position,
-                                      callbackAction: () =>
-                                      {
-                                          SwipeCallbackAction(drop);
-                                          ControllerManager.Instance.CanSwipe = true;
-                                      });
+                                      focused: false,
+                                      callbackAction: () => ControllerManager.Instance.CanSwipe = true);
                        else
-                       {
-                           SwipeCallbackAction(drop);
-
                            ProcessAfterMatchOperations(allMatchedDrops);
-                       }
                    });
 
         neighborToChange.Swipe(drop.transform.position,
+            focused: false,
             callbackAction: () =>
             {
                 //Switch back drop
                 if (!matchFounded)
-                    neighborToChange.Swipe(drop.transform.position);
+                    neighborToChange.Swipe(drop.transform.position, focused: true);
             });
 
         if (matchFounded)
@@ -78,11 +72,6 @@ public class GameManager : Singleton<GameManager>
         }
 
         #endregion
-    }
-
-    public void SwipeCallbackAction(Drop drop)
-    {
-        drop.spriteRenderer.sortingOrder -= 2;
     }
 
     public void BlowUpDrops(List<Drop> matchedDrops)

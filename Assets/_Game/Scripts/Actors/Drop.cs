@@ -15,20 +15,26 @@ public class Drop : MonoBehaviour
     [HideInInspector] public Vector2Int positionOnMatrix;
 
     private Sequence tweenSequence;
-  
+
     #region Animations / Effects
 
-    public void Swipe(Vector2 targetPos, Action callbackAction = null)
+    public void Swipe(Vector2 targetPos, bool focused = true, Action callbackAction = null)
     {
+        if (focused)
+            spriteRenderer.sortingOrder += 1;
+
         tweenSequence?.Kill(true);
 
         tweenSequence = DOTween.Sequence();
 
-        tweenSequence.Join(transform.DOMove(targetPos, BoardHelper.BoardSettings.DropSwitchDuration));
-        tweenSequence.Join(transform.DOPunchScale(Vector3.one * .2f, BoardHelper.BoardSettings.DropSwitchDuration, 0, 0));
+        tweenSequence.Join(transform.DOMove(targetPos, BoardHelper.BoardSettings.DropSwipeDuration).SetEase(BoardHelper.BoardSettings.DropSwipeEase));
+        tweenSequence.Join(transform.DOPunchScale((focused ? 1 : -1) * .2f * Vector3.one, BoardHelper.BoardSettings.DropSwipeDuration, 0, 0));
 
         tweenSequence.OnComplete(() =>
         {
+            if (focused)
+                spriteRenderer.sortingOrder -= 1;
+
             callbackAction?.Invoke();
         });
 

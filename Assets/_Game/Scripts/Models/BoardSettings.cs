@@ -13,20 +13,24 @@ namespace Assets.Scripts.Models
     public class BoardSettings : ScriptableObject
     {
         [Header("Board")]
-        [field: SerializeField] public int HorizontalTileCount = 8;
-        [field: SerializeField] public int VerticalTileCount = 8;
-        [field: HideInInspector] public float TileWidth;
-        [field: SerializeField] public List<int> SpawnerColumnIndexes;
+        public int HorizontalTileCount = 8;
+        public int VerticalTileCount = 8;
+        public float TileWidth;
+        public List<int> SpawnerColumnIndexes;
 
         [Header("Drop")]
-        [field: SerializeField] public float DropMargin = .5f;
-        [field: SerializeField] public float DropSwitchDuration = 1f;
-        [field: SerializeField] public float DropBlowUpDuration = .5f;
-        [field: SerializeField] public float DropFallDelay = .06f;
-        [field: SerializeField] public float DropFallDuration = 1f;
-        [field: SerializeField] public Ease DropFallEase = Ease.Linear;
+        public float DropMargin = .5f;
 
-        [field: SerializeField] public List<Drop> DropPrefabs = new();
+        public float DropSwipeDuration = 1f;
+        public Ease DropSwipeEase = Ease.Linear;
+
+        public float DropFallDelay = .06f;
+        public float DropFallDuration = 1f;
+        public Ease DropFallEase = Ease.Linear;
+
+        public float DropBlowUpDuration = .5f;
+
+        public List<Drop> DropPrefabs = new();
 
         public Vector2 GetDropScaleValue() => DropPrefabs.FirstOrDefault().transform.localScale;
     }
