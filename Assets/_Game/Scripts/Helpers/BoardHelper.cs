@@ -21,9 +21,9 @@ namespace Assets.Scripts.Actors
                                              -BoardSettings.DropMargin - y * BoardSettings.TileWidth
                                            + (BoardSettings.VerticalTileCount % 2 == 0 ? 0 : BoardSettings.TileWidth / 2));
 
-        public static void SetupDropMatrix(this Drop[,] matrix) =>            
-            matrix = new Drop[BoardSettings.HorizontalTileCount,
-                              BoardSettings.VerticalTileCount];
+        public static Drop[,] SetupDropMatrix() =>
+             new Drop[BoardSettings.HorizontalTileCount,
+                      BoardSettings.VerticalTileCount];
 
         public static Drop GetDropPrefabByType(DropType dropType) =>
             BoardSettings.DropPrefabs.FirstOrDefault(x => x.DropType == dropType);

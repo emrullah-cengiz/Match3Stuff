@@ -14,6 +14,7 @@ public class GameManager : Singleton<GameManager>
     public BoardSettings BoardSettings;
     public Drop[,] DropMatrix;
 
+    #region Actions / Calculatings
     public void Swipe(Drop drop, Vector2Int direction)
     {
         var neighborToChange = GetNeighborDropByDirection(drop.positionOnMatrix, direction);
@@ -39,12 +40,12 @@ public class GameManager : Singleton<GameManager>
                            drop.Swipe(neighborToChange.transform.position,
                                       callbackAction: () =>
                                       {
-                                          SwipeCallback(drop);
+                                          SwipeCallbackAction(drop);
                                           ControllerManager.Instance.CanSwipe = true;
                                       });
                        else
                        {
-                           SwipeCallback(drop);
+                           SwipeCallbackAction(drop);
 
                            ProcessAfterMatchOperations(allMatchedDrops);
                        }
@@ -72,7 +73,7 @@ public class GameManager : Singleton<GameManager>
         #endregion
     }
 
-    public void SwipeCallback(Drop drop)
+    public void SwipeCallbackAction(Drop drop)
     {
         drop.spriteRenderer.sortingOrder -= 2;
     }
@@ -89,7 +90,7 @@ public class GameManager : Singleton<GameManager>
         }
     }
 
-    public void RePositionFallableDropsOnMatrixAndSpawnNewDrops(List<Drop> matchedDrops, out List<Drop> dropsToFall)
+    public void RePositionFallableDropsAndSpawnNewDropsOnMatrix(List<Drop> matchedDrops, out List<Drop> dropsToFall)
     {
         dropsToFall = new();
 
@@ -149,13 +150,45 @@ public class GameManager : Singleton<GameManager>
         }
     }
 
-    private IEnumerator<Drop> GetDropsByMatrixColumn(int x, int? minY = null, int? maxY = null)
+    public void CheckAndAutoBlowUpDropsByReferenceDrops(List<Drop> drops)
     {
-        for (int i = BoardSettings.VerticalTileCount - 1; i >= 0; i--)
-            if ((!minY.HasValue || i >= minY) && (!maxY.HasValue || i <= maxY))
-                if (DropMatrix[x, i] != null)
-                    yield return DropMatrix[x, i];
+        List<Drop> matchedDrops = new();
+
+        foreach (var drop in drops)
+        {
+            if (GetMathchedPointsOnMatrix(new CheckMatchModel(drop.DropType, drop.positionOnMatrix), Vector2Int.zero, ref matchedDrops))
+                matchedDrops.Add(drop);
+        }
+
+        if (!matchedDrops.Any())
+        {
+            ControllerManager.Instance.CanSwipe = true;
+            return;
+        }
+
+        matchedDrops = matchedDrops.Distinct().ToList();
+
+        ProcessAfterMatchOperations(matchedDrops);
     }
+
+    public void ProcessAfterMatchOperations(List<Drop> matchedDrops)
+    {
+        BlowUpDrops(matchedDrops);
+
+        RePositionFallableDropsAndSpawnNewDropsOnMatrix(matchedDrops, out List<Drop> dropsToFall);
+
+        StartCoroutine(Utility.WaitForSeconds(BoardSettings.DropBlowUpDuration,
+            (object[] args) =>
+            {
+                dropsToFall.ForEach(x => x.DropDownToYourOwnMatrixPosition());
+
+                StartCoroutine(Utility.WaitForSeconds(BoardSettings.DropFallDuration,
+                    (object[] args) => CheckAndAutoBlowUpDropsByReferenceDrops(dropsToFall)));
+
+            }));
+    }
+
+    #endregion
 
     #region Match Checking
 
@@ -180,12 +213,6 @@ public class GameManager : Singleton<GameManager>
         return allMatchedDrops.Any();
     }
 
-    /// <summary>
-    /// Use CheckMatchModel.Direction for opposite operation on this function 
-    /// </summary>
-    /// <param name="checkMatchModel">Use CheckMatchModel.Direction for opposite operation on this function</param>
-    /// <param name="matchedDrops"></param>
-    /// <returns></returns>
     public bool GetMathchedPointsOnMatrix(CheckMatchModel checkMatchModel, Vector2Int dontLookDirection, ref List<Drop> matchedDrops)
     {
         List<Drop> matchedHorizontalDrops = new();
@@ -252,47 +279,9 @@ public class GameManager : Singleton<GameManager>
 
     }
 
-    public void CheckAndAutoBlowUpDropsByReferenceDrops(List<Drop> drops)
-    {
-        List<Drop> matchedDrops = new();
-
-        foreach (var drop in drops)
-        {
-            if (GetMathchedPointsOnMatrix(new CheckMatchModel(drop.DropType, drop.positionOnMatrix), Vector2Int.zero, ref matchedDrops))
-                matchedDrops.Add(drop);
-        }
-
-        if (!matchedDrops.Any())
-        {
-            ControllerManager.Instance.CanSwipe = true;
-            return;
-        }
-
-        matchedDrops = matchedDrops.Distinct().ToList();
-
-        ProcessAfterMatchOperations(matchedDrops);
-    }
-
-    public void ProcessAfterMatchOperations(List<Drop> matchedDrops)
-    {
-        BlowUpDrops(matchedDrops);
-
-        RePositionFallableDropsOnMatrixAndSpawnNewDrops(matchedDrops, out List<Drop> dropsToFall);
-
-        StartCoroutine(Utility.WaitForSeconds(BoardSettings.DropBlowUpDuration,
-            (object[] args) =>
-            {
-                dropsToFall.ForEach(x => x.DropDownToYourOwnMatrixPosition());
-
-                StartCoroutine(Utility.WaitForSeconds(BoardSettings.DropFallDuration,
-                    (object[] args) => CheckAndAutoBlowUpDropsByReferenceDrops(dropsToFall)));
-
-            }));
-    }
-
     #endregion
 
-    #region Helpers
+    #region In Manager Helpers
 
     private Drop GetNeighborDropByDirection(Vector2Int positionOnMatrix, Vector2Int direction)
     {
@@ -302,7 +291,13 @@ public class GameManager : Singleton<GameManager>
 
         return pos == positionOnMatrix ? null : DropMatrix[pos.x, pos.y];
     }
-
+    private IEnumerator<Drop> GetDropsByMatrixColumn(int x, int? minY = null, int? maxY = null)
+    {
+        for (int i = BoardSettings.VerticalTileCount - 1; i >= 0; i--)
+            if ((!minY.HasValue || i >= minY) && (!maxY.HasValue || i <= maxY))
+                if (DropMatrix[x, i] != null)
+                    yield return DropMatrix[x, i];
+    }
     #endregion
 
 }

@@ -1,15 +1,18 @@
-﻿using System.Collections;
+﻿using Assets._Game.Scripts.Interfaces;
 using UnityEngine;
 
 namespace Assets.Scripts.Infrastructure
 {
-    public abstract class Singleton<T> : MonoBehaviour where T : MonoBehaviour
+    public abstract class Singleton<T> : MonoBehaviour, ICustomMBActions where T : MonoBehaviour
     {
         public static T Instance
         {
             get;
             private set;
         }
+
+        public virtual void _Awake() { }
+        public virtual void _OnDestroy() { }
 
         private void Awake()
         {
@@ -27,8 +30,6 @@ namespace Assets.Scripts.Infrastructure
             _OnDestroy();
         }
 
-        public virtual void _Awake() { }
-        public virtual void _OnDestroy() { }
 
     }
 }

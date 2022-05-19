@@ -13,20 +13,13 @@ public class GameInitializer : MonoBehaviour
 
     public void Awake()
     {
-        GameManager.Instance.DropMatrix.SetupDropMatrix();
+        GameManager.Instance.DropMatrix = BoardHelper.SetupDropMatrix();
 
         FillTheBoard();
     }
 
     public void FillTheBoard()
     {
-        //TODO: It's Temporary, remove it!!
-
-        dropsTransform.GetComponentsInChildren<Drop>().ToList().ForEach(x => Destroy(x.gameObject));
-        GameManager.Instance.DropMatrix = new Drop[BoardHelper.BoardSettings.HorizontalTileCount,
-                                           BoardHelper.BoardSettings.VerticalTileCount];
-
-
         for (int y = 0; y < BoardHelper.BoardSettings.VerticalTileCount; y++)
         {
             for (int x = 0; x < BoardHelper.BoardSettings.HorizontalTileCount; x++)
