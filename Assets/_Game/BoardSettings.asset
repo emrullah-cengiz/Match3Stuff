@@ -1,0 +1,28 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f84f059bedd02a941992b179d70c3e45, type: 3}
+  m_Name: BoardSettings
+  m_EditorClassIdentifier: 
+  HorizontalTileCount: 8
+  VerticalTileCount: 8
+  TileWidth: 1.15
+  SpawnerColumnIndexes: 0000000001000000020000000400000006000000030000000500000007000000
+  DropMargin: 0.05
+  DropSwitchDuration: 0.4
+  DropBlowUpDuration: 0.5
+  DropFallDuration: 0.4
+  DropFallEase: 11
+  DropPrefabs:
+  - {fileID: 6630665538372155248, guid: 45f32c04797047b4db650d52dc28e288, type: 3}
+  - {fileID: 6630665538372155248, guid: 15d75e1b5b6571c4db2489ad23d9ae18, type: 3}
+  - {fileID: 6630665538372155248, guid: 9ee136ea97cee8c4499830832fa14983, type: 3}
+  - {fileID: 6630665538372155248, guid: f5f857e8fa642c947961e12cc5463490, type: 3}
