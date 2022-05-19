@@ -32,6 +32,6 @@ namespace Assets.Scripts.Models
 
         public List<Drop> DropPrefabs = new();
 
-        public Vector2 GetDropScaleValue() => DropPrefabs.FirstOrDefault().transform.localScale;
+        public Vector2 GetDropScaleValue() => DropPrefabs.FirstOrDefault().spriteRenderer.transform.localScale;
     }
 }

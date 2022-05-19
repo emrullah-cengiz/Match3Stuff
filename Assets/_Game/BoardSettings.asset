@@ -17,12 +17,12 @@ MonoBehaviour:
   TileWidth: 1.15
   SpawnerColumnIndexes: 0000000001000000020000000400000006000000
   DropMargin: 0.05
-  DropSwitchDuration: 0.4
-  DropBlowUpDuration: 0.5
-  DropFallDelay: 0.06
-  DropFallDuration: 0.4
+  DropSwipeDuration: 0.3
   DropSwipeEase: 1
+  DropFallDelay: 0.06
+  DropFallDuration: 0.35
   DropFallEase: 11
+  DropBlowUpDuration: 0.35
   DropPrefabs:
   - {fileID: 6630665538372155248, guid: 45f32c04797047b4db650d52dc28e288, type: 3}
   - {fileID: 6630665538372155248, guid: 15d75e1b5b6571c4db2489ad23d9ae18, type: 3}

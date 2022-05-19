@@ -28,7 +28,7 @@ public class Drop : MonoBehaviour
         tweenSequence = DOTween.Sequence();
 
         tweenSequence.Join(transform.DOMove(targetPos, BoardHelper.BoardSettings.DropSwipeDuration).SetEase(BoardHelper.BoardSettings.DropSwipeEase));
-        tweenSequence.Join(transform.DOPunchScale((focused ? 1 : -1) * .2f * Vector3.one, BoardHelper.BoardSettings.DropSwipeDuration, 0, 0));
+        tweenSequence.Join(spriteRenderer.transform.DOPunchScale((focused ? 1 : -1) * .2f * Vector3.one, BoardHelper.BoardSettings.DropSwipeDuration, 0, 0));
 
         tweenSequence.OnComplete(() =>
         {
