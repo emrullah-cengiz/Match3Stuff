@@ -14,6 +14,13 @@ public class GameManager : Singleton<GameManager>
     public BoardSettings BoardSettings;
     public Drop[,] DropMatrix;
 
+    [HideInInspector] public Vector2 dropScaleValue;
+
+    public override void _Awake()
+    {
+        dropScaleValue = BoardSettings.GetDropScaleValue();
+    }
+
     #region Actions / Calculatings
     public void Swipe(Drop drop, Vector2Int direction)
     {
@@ -90,9 +97,10 @@ public class GameManager : Singleton<GameManager>
         }
     }
 
-    public void RePositionFallableDropsAndSpawnNewDropsOnMatrix(List<Drop> matchedDrops, out List<Drop> dropsToFall)
+    public void RePositionFallableDropsAndSpawnNewDropsOnMatrix(List<Drop> matchedDrops, out List<IGrouping<int, Drop>> groupedDropsByColumnToFall)
     {
-        dropsToFall = new();
+        List<Drop> dropsToFall = new();
+        groupedDropsByColumnToFall = new();
 
         var groupedEmptyTilesByColumn = matchedDrops.Select(d => d.positionOnMatrix)
                                                     .OrderBy(d => d.x)
@@ -148,6 +156,8 @@ public class GameManager : Singleton<GameManager>
                 dropsToFall.Add(dropToFall);
             }
         }
+
+        groupedDropsByColumnToFall = dropsToFall.GroupBy(x => x.positionOnMatrix.x).ToList();
     }
 
     public void CheckAndAutoBlowUpDropsByReferenceDrops(List<Drop> drops)
@@ -175,16 +185,24 @@ public class GameManager : Singleton<GameManager>
     {
         BlowUpDrops(matchedDrops);
 
-        RePositionFallableDropsAndSpawnNewDropsOnMatrix(matchedDrops, out List<Drop> dropsToFall);
+        RePositionFallableDropsAndSpawnNewDropsOnMatrix(matchedDrops, out List<IGrouping<int, Drop>> groupedDropsByColumnToFall);
 
         StartCoroutine(Utility.WaitForSeconds(BoardSettings.DropBlowUpDuration,
             (object[] args) =>
             {
-                dropsToFall.ForEach(x => x.DropDownToYourOwnMatrixPosition());
+                foreach (var group in groupedDropsByColumnToFall)
+                {
+                    var drops = group.ToList();
 
-                StartCoroutine(Utility.WaitForSeconds(BoardSettings.DropFallDuration,
-                    (object[] args) => CheckAndAutoBlowUpDropsByReferenceDrops(dropsToFall)));
+                    for (int i = 0; i < drops.Count; i++)
+                        drops[i].DropDownToYourOwnMatrixPosition(i * BoardSettings.DropFallDelay);
+                }
 
+                float maxFallDelayOfDropsToFall = groupedDropsByColumnToFall.Max(x => x.Count()) * BoardSettings.DropFallDelay;
+
+                StartCoroutine(Utility.WaitForSeconds(BoardSettings.DropFallDuration + maxFallDelayOfDropsToFall,
+                    (object[] args) => CheckAndAutoBlowUpDropsByReferenceDrops(groupedDropsByColumnToFall.SelectMany(x => x.ToList())
+                                                                                                         .ToList())));
             }));
     }
 

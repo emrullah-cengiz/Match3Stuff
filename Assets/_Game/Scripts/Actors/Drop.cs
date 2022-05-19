@@ -15,7 +15,7 @@ public class Drop : MonoBehaviour
     [HideInInspector] public Vector2Int positionOnMatrix;
 
     private Sequence tweenSequence;
-
+  
     #region Animations / Effects
 
     public void Swipe(Vector2 targetPos, Action callbackAction = null)
@@ -35,12 +35,30 @@ public class Drop : MonoBehaviour
         tweenSequence.Play();
 
     }
-    public void DropDownToYourOwnMatrixPosition()
-    {
-        transform.DOMove(BoardHelper.GetDropPositionByMatrixPosition(positionOnMatrix.x, positionOnMatrix.y), BoardHelper.BoardSettings.DropFallDuration)
-             .SetEase(BoardHelper.BoardSettings.DropFallEase);
-    }
 
+    public void DropDownToYourOwnMatrixPosition(float delayToBegin = 0)
+    {
+        tweenSequence?.Kill(true);
+
+        tweenSequence = DOTween.Sequence();
+
+        tweenSequence.AppendInterval(delayToBegin);
+
+        //scale
+        tweenSequence.Append(spriteRenderer.transform.DOScaleY(GameManager.Instance.dropScaleValue.y + .15f, BoardHelper.BoardSettings.DropFallDuration));
+        tweenSequence.Join(spriteRenderer.transform.DOScaleX(GameManager.Instance.dropScaleValue.x - .1f, BoardHelper.BoardSettings.DropFallDuration));
+
+        //fall
+        tweenSequence.Join(transform.DOMove(BoardHelper.GetDropPositionByMatrixPosition(positionOnMatrix.x, positionOnMatrix.y),
+                                            BoardHelper.BoardSettings.DropFallDuration)
+                                    .SetEase(BoardHelper.BoardSettings.DropFallEase));
+
+        //scale back
+        tweenSequence.Append(spriteRenderer.transform.DOScaleY(GameManager.Instance.dropScaleValue.y, BoardHelper.BoardSettings.DropFallDuration / 3));
+        tweenSequence.Append(spriteRenderer.transform.DOScaleX(GameManager.Instance.dropScaleValue.x, BoardHelper.BoardSettings.DropFallDuration / 3));
+
+        tweenSequence.Play();
+    }
     public void BlowUp()
     {
         tweenSequence?.Kill(true);

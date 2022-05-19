@@ -22,9 +22,12 @@ namespace Assets.Scripts.Models
         [field: SerializeField] public float DropMargin = .5f;
         [field: SerializeField] public float DropSwitchDuration = 1f;
         [field: SerializeField] public float DropBlowUpDuration = .5f;
+        [field: SerializeField] public float DropFallDelay = .06f;
         [field: SerializeField] public float DropFallDuration = 1f;
         [field: SerializeField] public Ease DropFallEase = Ease.Linear;
 
-        [field: SerializeField] public List<Drop> DropPrefabs;
+        [field: SerializeField] public List<Drop> DropPrefabs = new();
+
+        public Vector2 GetDropScaleValue() => DropPrefabs.FirstOrDefault().transform.localScale;
     }
 }
