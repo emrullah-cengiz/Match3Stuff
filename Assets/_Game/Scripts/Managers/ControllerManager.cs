@@ -20,14 +20,12 @@ public class ControllerManager : Singleton<ControllerManager>
 
     private void Update()
     {
-        SwipeHandler();
+        if (CanSwipe)
+            SwipeHandler();
     }
 
     private void SwipeHandler()
     {
-        if (!CanSwipe)
-            return;
-
         if (Input.GetMouseButtonDown(0))
         {
             HoldedDrop = GetTouchedDrop();
