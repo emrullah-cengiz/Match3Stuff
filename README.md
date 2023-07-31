@@ -1,5 +1,5 @@
 
-# Match-3 Puzzle Game
+# Match-3 Puzzle Game (With Swipe)
 
 Match-3 Case study with swipe mechanic.
 
